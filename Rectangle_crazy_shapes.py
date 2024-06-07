@@ -70,21 +70,12 @@ def extend_perpendicular(point1, point2, linearRing, tiny_increment_value):
     line = LineString([point1, point2])
     inc = increment(angle+np.pi/2, tiny_increment_value)
     extends = 0
-    extends_reverse = 0
     #Linearly transforming line until it intersects an exterior side of the polygon
     while linearRing.contains(line):
         line = transform(line, lambda x: x + [inc])
-    line = LineString([point1, point2])   
-    inc = increment(angle-np.pi/2, tiny_increment_value)
-    while linearRing.contains(line):#Linearly transforming line again, this time in the opposite direction
-        line = transform(line, lambda x: x + [inc])
-        extends_reverse +=1
-    if extends > extends_reverse:
-        side = (extends-1)*tiny_increment_value
-        return side, angle+(np.pi/2), point1, point2
-    else:
-        side = (extends_reverse-1)*tiny_increment_value
-        return side, angle-(np.pi/2), point1, point2
+        extends +=1
+    side = (extends-1)*tiny_increment_value
+    return side, angle+(np.pi/2), point1, point2
     
 #iterate through every pair of points to find the largest eligible rectangle
 def test(linearRing, point_gap):
@@ -126,9 +117,9 @@ def plot_random_polygon(polygon, coords, out_file_name):
     # just so that it is plotted as closed polygon
     polygon.append(polygon[0])
     xs, ys = zip(*polygon)
-    plt.plot(xs, ys, "r-", linewidth=0.4)
+    plt.plot(xs, ys, "r-", linewidth=0.5)
     xs, ys = zip(*coords, coords[0])
-    plt.plot(xs, ys, "b-", linewidth=0.2)
+    plt.plot(xs, ys, "b-", linewidth=0.3)
     plt.savefig(out_file_name, dpi=300)
     plt.show()
 
